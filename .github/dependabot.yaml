@@ -6,11 +6,11 @@ updates:
       schedule:
           interval: "daily"
       assignees:
-          - "nothub"
+          - "nmondal"
 
     - package-ecosystem: "github-actions"
       directory: "/"
       schedule:
           interval: "daily"
       assignees:
-          - "nothub"
+          - "nmondal"
