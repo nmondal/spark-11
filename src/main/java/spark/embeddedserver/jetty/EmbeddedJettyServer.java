@@ -16,28 +16,27 @@
  */
 package spark.embeddedserver.jetty;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import jakarta.servlet.DispatcherType;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.SessionHandler;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import spark.embeddedserver.EmbeddedServer;
 import spark.embeddedserver.VirtualThreadAware;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.embeddedserver.jetty.websocket.WebSocketServletContextHandlerFactory;
+import spark.http.matching.MatcherFilter;
 import spark.ssl.SslStores;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Spark server implementation
@@ -50,7 +49,8 @@ public class EmbeddedJettyServer extends VirtualThreadAware.Proxy implements Emb
     private static final String NAME = "Spark";
 
     private final JettyServerFactory serverFactory;
-    private final Handler handler;
+    private final boolean httpOnly;
+    private final MatcherFilter matcherFilter;
     private Server server;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -61,10 +61,11 @@ public class EmbeddedJettyServer extends VirtualThreadAware.Proxy implements Emb
     private ThreadPool threadPool = null;
     private boolean trustForwardHeaders = true; // true by default
 
-    public EmbeddedJettyServer(JettyServerFactory serverFactory, Handler handler) {
+    public EmbeddedJettyServer(JettyServerFactory serverFactory, boolean httpOnly, MatcherFilter matcherFilter) {
         super(serverFactory);
         this.serverFactory = serverFactory;
-        this.handler = handler;
+        this.httpOnly = httpOnly;
+        this.matcherFilter = matcherFilter;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class EmbeddedJettyServer extends VirtualThreadAware.Proxy implements Emb
             connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, useHTTP2 ,trustForwardHeaders);
         }
 
-        Connector previousConnectors[] = server.getConnectors();
+        Connector[] previousConnectors = server.getConnectors();
         server = connector.getServer();
         if (previousConnectors.length != 0) {
             server.setConnectors(previousConnectors);
@@ -127,25 +128,19 @@ public class EmbeddedJettyServer extends VirtualThreadAware.Proxy implements Emb
             server.setConnectors(new Connector[] {connector});
         }
 
-        ServletContextHandler webSocketServletContextHandler =
+        final ServletContextHandler webSocketServletContextHandler =
             WebSocketServletContextHandlerFactory.create(webSocketHandlers, webSocketIdleTimeoutMillis);
 
-        // Handle web socket routes
-        if (webSocketServletContextHandler == null) {
-            server.setHandler(handler);
-        } else {
-            List<Handler> handlersInList = new ArrayList<>();
-            handlersInList.add(handler);
+        final ServletContextHandler servletContextHandler = webSocketServletContextHandler == null ?
+            new ServletContextHandler() : webSocketServletContextHandler;
 
-            // WebSocket handler must be the last one
-            if (webSocketServletContextHandler != null) {
-                handlersInList.add(webSocketServletContextHandler);
-            }
+        final SessionHandler sessionHandler = new SessionHandler();
+        sessionHandler.getSessionCookieConfig().setHttpOnly(httpOnly);
+        servletContextHandler.setSessionHandler(sessionHandler);
 
-            HandlerList handlers = new HandlerList();
-            handlers.setHandlers(handlersInList.toArray(new Handler[handlersInList.size()]));
-            server.setHandler(handlers);
-        }
+        servletContextHandler.addFilter(matcherFilter, "/*", EnumSet.allOf(DispatcherType.class));
+
+        server.setHandler(servletContextHandler);
 
         logger.info("== {} has ignited ...", NAME);
         if (hasCustomizedConnectors) {

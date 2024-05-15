@@ -34,6 +34,8 @@ public class VirtualThreadingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        service.stop();
+        if (service != null) {
+            service.stop();
+        }
     }
 }

@@ -16,15 +16,13 @@
  */
 package spark.embeddedserver.jetty;
 
-import java.io.IOException;
-
 import jakarta.servlet.Filter;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.eclipse.jetty.ee10.servlet.SessionHandler;
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 
 /**
  * Simple Jetty Handler
@@ -33,28 +31,33 @@ import org.eclipse.jetty.server.session.SessionHandler;
  */
 public class JettyHandler extends SessionHandler {
 
-    private Filter filter;
+    private final Filter filter;
 
     public JettyHandler(Filter filter) {
         this.filter = filter;
     }
 
     @Override
-    public void doHandle(
-            String target,
-            Request baseRequest,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException, ServletException {
+    public boolean handle(Request request, Response response, Callback callback) throws Exception {
+        if (request instanceof org.eclipse.jetty.ee10.servlet.ServletContextRequest servletContextRequest) {
+            final HttpServletResponse httpServletResponse = servletContextRequest.getHttpServletResponse();
+            final HttpServletRequest httpServletRequest = servletContextRequest.getServletApiRequest();
+            final HttpRequestWrapper wrapper = new HttpRequestWrapper(httpServletRequest);
 
-        HttpRequestWrapper wrapper = new HttpRequestWrapper(request);
-        filter.doFilter(wrapper, response, null);
+            filter.doFilter(wrapper, httpServletResponse, null);
 
-        if (wrapper.notConsumed()) {
-            baseRequest.setHandled(false);
-        } else {
-            baseRequest.setHandled(true);
+            callback.succeeded();
+
+            return true;
         }
 
+        return false;
+
+        //if (wrapper.notConsumed()) {
+        //    return false;
+        //} else {
+        //    return super.handle(request, response, callback);
+        //}
     }
 
 }

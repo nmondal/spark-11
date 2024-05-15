@@ -16,27 +16,20 @@
  */
 package spark.servlet;
 
-import java.io.IOException;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import spark.ExceptionMapper;
 import spark.globalstate.ServletFlag;
 import spark.http.matching.MatcherFilter;
 import spark.route.ServletRoutes;
 import spark.staticfiles.StaticFilesConfiguration;
 import spark.utils.StringUtils;
+
+import java.io.IOException;
 
 /**
  * Filter that can be configured to be used in a web.xml file.
@@ -102,7 +95,7 @@ public class SparkFilter implements Filter {
     protected SparkApplication getApplication(String applicationClassName) throws ServletException {
         try {
             Class<?> applicationClass = Class.forName(applicationClassName);
-            return (SparkApplication) applicationClass.newInstance();
+            return (SparkApplication) applicationClass.getDeclaredConstructor().newInstance();
         } catch (Exception exc) {
             throw new ServletException(exc);
         }
@@ -125,7 +118,7 @@ public class SparkFilter implements Filter {
         if (StringUtils.isNotBlank(applications)) {
             final String[] sparkApplications = applications.split(",");
 
-            if (sparkApplications != null && sparkApplications.length > 0) {
+            if (sparkApplications.length > 0) {
                 solvedApplications = new SparkApplication[sparkApplications.length];
 
                 for (int index = 0; index < sparkApplications.length; index++) {

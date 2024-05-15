@@ -1,5 +1,6 @@
 package spark.embeddedserver.jetty;
 
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.junit.After;
@@ -40,7 +41,7 @@ public class EmbeddedJettyFactoryTest {
 
         verify(jettyServerFactory, times(1)).create(100, 10, 10000);
         verifyNoMoreInteractions(jettyServerFactory);
-        assertTrue(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly());
+        assertTrue(((ServletContextHandler) server.getHandler()).getSessionHandler().isHttpOnly());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class EmbeddedJettyFactoryTest {
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 6759, false, null, 100, 10, 10000);
 
-        assertFalse(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly());
+        assertFalse(((ServletContextHandler) server.getHandler()).getSessionHandler().isHttpOnly());
     }
 
     @After

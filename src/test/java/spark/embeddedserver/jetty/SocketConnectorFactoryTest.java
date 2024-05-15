@@ -104,9 +104,9 @@ public class SocketConnectorFactoryTest {
         final String host = "localhost";
         final int port = 8888;
 
-        final String keystoreFile = "keystoreFile.jks";
+        final String keystoreFile = "./target/test-classes/keystoreFile.jks";
         final String keystorePassword = "keystorePassword";
-        final String truststoreFile = "truststoreFile.jks";
+        final String truststoreFile = "./target/test-classes/truststoreFile.jks";
         final String trustStorePassword = "trustStorePassword";
 
         SslStores sslStores = SslStores.create(keystoreFile, keystorePassword, truststoreFile, trustStorePassword);
@@ -129,11 +129,11 @@ public class SocketConnectorFactoryTest {
         SslConnectionFactory sslConnectionFactory = (SslConnectionFactory) factories.get("ssl");
         SslContextFactory sslContextFactory = sslConnectionFactory.getSslContextFactory();
 
-        assertEquals("Should return the Keystore file specified", keystoreFile,
-                sslContextFactory.getKeyStoreResource().getFile().getName());
+        assertEquals("Should return the Keystore file specified", "keystoreFile.jks",
+                sslContextFactory.getKeyStoreResource().getFileName());
 
-        assertEquals("Should return the Truststore file specified", truststoreFile,
-                sslContextFactory.getTrustStoreResource().getFile().getName());
+        assertEquals("Should return the Truststore file specified", "truststoreFile.jks",
+                sslContextFactory.getTrustStoreResource().getFileName());
 
     }
 

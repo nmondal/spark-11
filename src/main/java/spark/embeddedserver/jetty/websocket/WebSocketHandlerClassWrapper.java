@@ -1,5 +1,7 @@
 package spark.embeddedserver.jetty.websocket;
 
+import java.lang.reflect.InvocationTargetException;
+
 import static java.util.Objects.requireNonNull;
 
 public class WebSocketHandlerClassWrapper implements WebSocketHandlerWrapper {
@@ -14,8 +16,8 @@ public class WebSocketHandlerClassWrapper implements WebSocketHandlerWrapper {
     @Override
     public Object getHandler() {
         try {
-            return handlerClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
+            return handlerClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
             throw new RuntimeException("Could not instantiate websocket handler", ex);
         }
     }

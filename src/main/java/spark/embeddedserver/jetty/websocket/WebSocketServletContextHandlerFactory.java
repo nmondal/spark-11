@@ -16,16 +16,15 @@
  */
 package spark.embeddedserver.jetty.websocket;
 
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.websocket.server.JettyWebSocketCreator;
+import org.eclipse.jetty.ee10.websocket.server.config.JettyWebSocketServletContainerInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
-
-import jakarta.servlet.ServletContext;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.server.JettyWebSocketCreator;
-import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Creates websocket servlet context handlers.
@@ -45,7 +44,7 @@ public class WebSocketServletContextHandlerFactory {
                                                Optional<Long> webSocketIdleTimeoutMillis) {
         if ( webSocketHandlers == null ) return null;
         try {
-            ServletContextHandler webSocketServletContextHandler = new ServletContextHandler(null, "/", true, false);
+            ServletContextHandler webSocketServletContextHandler = new ServletContextHandler();
             // Since we are configuring WebSockets before the ServletContextHandler and WebSocketUpgradeFilter is
             // even initialized / started, then we have to pre-populate the configuration that will eventually
             // be used by Jetty's WebSocketUpgradeFilter.
