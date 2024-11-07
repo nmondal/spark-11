@@ -27,6 +27,8 @@ import spark.routematch.RouteMatch;
  */
 final class Routes {
 
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(Routes.class);
+
     static void execute(RouteContext context) throws Exception {
 
         Object content = context.body().get();
@@ -59,6 +61,10 @@ final class Routes {
                 context.responseWrapper().setDelegate(context.response());
 
                 Object element = route.handle(context.requestWrapper(), context.responseWrapper());
+                if ( element == null && context.response().body() == null ){ // A misbehaving route returning null???
+                    LOG.warn( "route {} produced 'null', will replace with string 'null'", route.getPath());
+                    element = "null" ;
+                }
                 if (!context.responseWrapper().isRedirected()) {
                 	result = route.render(element);
                 }
