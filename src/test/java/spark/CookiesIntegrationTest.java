@@ -1,16 +1,19 @@
 package spark;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static spark.Spark.*;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static spark.Spark.halt;
+import static spark.Spark.post;
 
 /**
  * System tests for the Cookies support.
@@ -20,7 +23,15 @@ import org.junit.Test;
 public class CookiesIntegrationTest {
 
     private static final String DEFAULT_HOST_URL = "http://localhost:4567";
-    private HttpClient httpClient = HttpClientBuilder.create().build();
+
+    private final HttpClient httpClient = HttpClientBuilder.create()
+        .setDefaultRequestConfig(RequestConfig.custom()
+            // Test fails without this change
+            // Apache HTTP Client 4.4+ does not handle RFC compliant headers well
+            // https://stackoverflow.com/questions/36473478/fixing-httpclient-warning-invalid-expires-attribute-using-fluent-api
+            .setCookieSpec(CookieSpecs.STANDARD)
+            .build())
+        .build();
 
     @BeforeClass
     public static void initRoutes() throws InterruptedException {

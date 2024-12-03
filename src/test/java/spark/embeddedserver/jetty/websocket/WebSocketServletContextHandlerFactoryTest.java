@@ -1,26 +1,11 @@
 package spark.embeddedserver.jetty.websocket;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-import jakarta.servlet.ServletContext;
-
-import org.eclipse.jetty.http.pathmap.MappedResource;
-import org.eclipse.jetty.http.pathmap.PathSpec;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-/*
-import org.eclipse.jetty.websocket.server.NativeWebSocketConfiguration;
-import org.eclipse.jetty.websocket.server.WebSocketServerFactory;
-import org.eclipse.jetty.websocket.server.WebSocketUpgradeFilter;
-import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
-
- */
-import org.junit.Test;
+import static org.junit.Assert.assertNull;
 
 public class WebSocketServletContextHandlerFactoryTest {
 
