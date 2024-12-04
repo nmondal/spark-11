@@ -16,10 +16,13 @@
  */
 package spark.embeddedserver.jetty;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import spark.ssl.SslStores;
@@ -50,6 +53,32 @@ public class SocketConnectorFactory {
         return connector;
     }
 
+    // jetty 12 verifies if a resource is readable, that breaks existing ( bad ) behaviour of tests
+    public static boolean ENABLE_JETTY_11_COMPATIBILITY = false;
+
+    // a hacky way to insert non existing resource
+    static void forceInsertNonExistingResource(SslContextFactory.Server sslContextFactory, String someFieldName, String somePath) {
+        try {
+            Resource res = ResourceFactory.of(sslContextFactory).newResource(somePath);
+            Field myField = SslContextFactory.class.getDeclaredField( someFieldName );
+            myField.setAccessible(true);
+            myField.set( sslContextFactory, res) ;
+        }catch (Throwable ignore){
+
+        }
+    }
+
+    // run if fails runs the default
+    static void runOrDefault(Runnable call, Runnable def){
+        try {
+            call.run();
+        }catch (RuntimeException rex){
+            if (ENABLE_JETTY_11_COMPATIBILITY){
+                def.run();
+            }
+        }
+    }
+
     /**
      * Creates a ssl jetty socket jetty. Keystore required, truststore
      * optional. If truststore not specified keystore will be reused.
@@ -71,8 +100,10 @@ public class SocketConnectorFactory {
         Assert.notNull(host, "'host' must not be null");
         Assert.notNull(sslStores, "'sslStores' must not be null");
 
-        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
-        sslContextFactory.setKeyStorePath(sslStores.keystoreFile());
+        final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+        runOrDefault( () -> sslContextFactory.setKeyStorePath(sslStores.keystoreFile()), () ->{
+            forceInsertNonExistingResource( sslContextFactory, "_keyStoreResource",  sslStores.keystoreFile());
+        });
 
         if (sslStores.keystorePassword() != null) {
             sslContextFactory.setKeyStorePassword(sslStores.keystorePassword());
@@ -83,7 +114,9 @@ public class SocketConnectorFactory {
         }
 
         if (sslStores.trustStoreFile() != null) {
-            sslContextFactory.setTrustStorePath(sslStores.trustStoreFile());
+            runOrDefault( () -> sslContextFactory.setTrustStorePath(sslStores.trustStoreFile() ), () ->{
+                forceInsertNonExistingResource( sslContextFactory, "_trustStoreResource",  sslStores.trustStoreFile());
+            });
         }
 
         if (sslStores.trustStorePassword() != null) {
