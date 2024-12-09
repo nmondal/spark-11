@@ -113,7 +113,8 @@ public class SocketConnectorFactoryTest {
 
         Server server = new Server();
 
-        SocketConnectorFactory.ENABLE_JETTY_11_COMPATIBILITY = true;
+        // This is not required anymore -- peace out SocketConnectorFactory.ENABLE_JETTY_11_COMPATIBILITY = true;
+
         ServerConnector serverConnector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, false, true);
 
         String internalHost = Whitebox.getInternalState(serverConnector, "_host");
