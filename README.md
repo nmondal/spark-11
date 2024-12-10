@@ -1,14 +1,17 @@
 [![](https://img.shields.io/travis/perwendel/spark.svg)](https://travis-ci.org/perwendel/spark)
 [![](https://img.shields.io/github/license/perwendel/spark.svg)](./LICENSE)
+To answer a lot of questions about activity in this project, 
+yes, this project is fully active, and we just released the jetty 12
+compatible version as `3.0.1` today 10th Dec 2024!
+
 Spark3-JDK17 - a tiny web framework for Java 9+!
 
-**Spark 3-JDK17 is in SNAPSHOT repo!**
 
 ```xml
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0</version>
+    <version>3.0.1</version>
 </dependency>
 ```
 Due to some issues, the parent got changed into `org.zoomba-lang` that we own.
@@ -26,7 +29,7 @@ When committing to the project please use Spark format configured in https://git
 ## Customizations Done for Java 9+
 
 1. Moved to Java 17 ( obviously :-) ) 
-2. Jetty 11 is being used ( which is Java 9+ compatible )
+2. Jetty 12 is being used ( which is Java 9+ compatible )
 3. Tests earlier using Powermock ( yes, bad idea ) - were removed - and custom reflection set in 
 4. All `javax` classes replaced by corresponding `jakarta` ( Java 9+ removed `javax` from base SDK ) as jetty chose to do it that way
 5. Refactoring the websockets - jetty 11 does it differently. 
@@ -41,7 +44,7 @@ Getting started
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0</version>
+    <version>3.0.1</version>
 </dependency>
 ```
 
