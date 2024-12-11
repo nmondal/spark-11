@@ -38,13 +38,17 @@ final class BeforeFilters {
             Object filterTarget = filterMatch.getTarget();
 
             if (filterTarget instanceof FilterImpl) {
-                Request request = RequestResponseFactory.create(filterMatch, context.httpRequest());
 
-                FilterImpl filter = (FilterImpl) filterTarget;
+                if (context.requestWrapper().getDelegate() == null) {
+                    Request request = RequestResponseFactory.create(filterMatch, context.httpRequest());
+                    context.requestWrapper().setDelegate(request);
+                } else {
+                    context.requestWrapper().changeMatch(filterMatch);
+                }
 
-                context.requestWrapper().setDelegate(request);
                 context.responseWrapper().setDelegate(context.response());
 
+                FilterImpl filter = (FilterImpl) filterTarget;
                 filter.handle(context.requestWrapper(), context.responseWrapper());
 
                 String bodyAfterFilter = context.response().body();
