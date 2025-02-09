@@ -134,7 +134,7 @@ public class EmbeddedJettyServer extends VirtualThreadAware.Proxy implements Emb
         final ServletContextHandler servletContextHandler = webSocketServletContextHandler == null ?
             new ServletContextHandler() : webSocketServletContextHandler;
 
-        final SessionHandler sessionHandler = new SessionHandler();
+        final JettyHandler sessionHandler = new JettyHandler(matcherFilter);
         sessionHandler.getSessionCookieConfig().setHttpOnly(httpOnly);
         servletContextHandler.setSessionHandler(sessionHandler);
 
