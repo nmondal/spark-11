@@ -9,7 +9,7 @@
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
     <packaging>bundle</packaging>
-    <version>3.0.1</version>
+    <version>3.0.2-SNAPSHOT</version>
     <name>Spark</name>
     <description>A micro framework for creating web applications in Kotlin and Java 8 with minimal effort</description>
     <url>http://www.sparkjava.com</url>
@@ -32,7 +32,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <jetty.version>12.0.15</jetty.version>
+        <jetty.version>12.0.19</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>1.7.4</powermock.version>
         <mockito.version>1.10.19</mockito.version>
@@ -67,7 +67,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.12</version>
+            <version>1.5.18</version>
             <scope>test</scope>
         </dependency>
 

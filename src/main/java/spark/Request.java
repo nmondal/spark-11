@@ -268,9 +268,18 @@ public class Request {
         return bodyAsBytes;
     }
 
+    /**
+     * <a href="https://github.com/nmondal/spark-11/issues/23">...</a>
+     */
+    private static final String BODY_AS_BYTE_ATTR = "_60dy8" ;
+
     private void readBodyAsBytes() {
         try {
-            bodyAsBytes = IOUtils.toByteArray(servletRequest.getInputStream());
+            bodyAsBytes = (byte[]) servletRequest.getAttribute( BODY_AS_BYTE_ATTR );
+            if ( bodyAsBytes == null ){
+                bodyAsBytes = IOUtils.toByteArray(servletRequest.getInputStream());
+                servletRequest.setAttribute( BODY_AS_BYTE_ATTR, bodyAsBytes );
+            }
         } catch (Exception e) {
             LOG.warn("Exception when reading body", e);
         }
