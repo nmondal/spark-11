@@ -1,8 +1,8 @@
 [![](https://img.shields.io/travis/perwendel/spark.svg)](https://travis-ci.org/perwendel/spark)
 [![](https://img.shields.io/github/license/perwendel/spark.svg)](./LICENSE)
 To answer a lot of questions about activity in this project, 
-yes, this project is fully active, and we just released the jetty 12
-compatible version as `3.0.1` today 10th Dec 2024!
+yes, this project is fully active, and we just released the latest jetty 12
+compatible version as `3.0.2` today 9th May 2025!
 
 Spark3-JDK17 - a tiny web framework for Java 9+!
 
@@ -11,7 +11,7 @@ Spark3-JDK17 - a tiny web framework for Java 9+!
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 Due to some issues, the parent got changed into `org.zoomba-lang` that we own.
@@ -44,7 +44,7 @@ Getting started
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 </dependency>
 ```
 
