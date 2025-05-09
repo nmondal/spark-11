@@ -25,7 +25,14 @@
         <developerConnection>scm:git:git@github.com:nmondal/spark-11.git</developerConnection>
         <url>scm:git:git@github.com:nmondal/spark-11.git</url>
     </scm>
+
     <developers>
+        <developer>
+            <name>Natus Homo</name>
+            <email>non.est.sacra@gmail.com</email>
+            <organization>org.zoomba-lang</organization>
+            <organizationUrl>zoomba-lang.org</organizationUrl>
+        </developer>
     </developers>
 
     <properties>
@@ -277,14 +284,18 @@
                 <extensions>true</extensions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.1.1</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.7.0</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <skip>${deploy.skip}</skip>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <!---
+                    <waitUntil>published</waitUntil>
+                    -->
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>
