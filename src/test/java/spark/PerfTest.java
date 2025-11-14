@@ -27,6 +27,7 @@ public class PerfTest {
     public static void setUpClass() {
         service = ignite();
         service.port(SOME_PORT);
+
         service.get("/hello", (q, a) ->  {
             a.status(200);
             return "Hello, World!";
@@ -78,8 +79,13 @@ public class PerfTest {
     }
 
     @Test
-    public void testPerf1() throws Exception {
-        testForPerf( SOME_PORT, 10000, 10 , 30 );
+    public void testPerf_100000_20_30() throws Exception {
+        testForPerf( SOME_PORT, 100000, 20 , 30 );
+    }
+
+    @Test
+    public void testPerf_100000_50_30() throws Exception {
+        testForPerf( SOME_PORT, 100000, 40 , 30 );
     }
 
     @AfterClass
