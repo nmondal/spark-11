@@ -117,7 +117,9 @@ public class SparkTestUtil {
     public UrlResponse doMethod(String requestMethod, String path, String body, boolean secureConnection,
                                 String acceptType, Map<String, String> reqHeaders) throws IOException {
         HttpUriRequest httpRequest = getHttpRequest(requestMethod, path, body, secureConnection, acceptType, reqHeaders);
+        long startTime = System.nanoTime();
         HttpResponse httpResponse = httpClient.execute(httpRequest);
+        long endTime = System.nanoTime();
 
         UrlResponse urlResponse = new UrlResponse();
         urlResponse.status = httpResponse.getStatusLine().getStatusCode();
@@ -133,6 +135,7 @@ public class SparkTestUtil {
             headers.put(header.getName(), header.getValue());
         }
         urlResponse.headers = headers;
+        urlResponse.timeTaken = (endTime - startTime)/1000 ;
         return urlResponse;
     }
 
@@ -304,6 +307,7 @@ public class SparkTestUtil {
         public Map<String, String> headers;
         public String body;
         public int status;
+        public long timeTaken;
     }
 
     public static void sleep(long time) {
