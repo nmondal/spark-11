@@ -18,8 +18,7 @@ package spark.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.function.Predicate;
+import java.util.Enumeration;
 import java.util.zip.GZIPOutputStream;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,11 +33,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class GzipUtils {
 
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
+
     private static final String CONTENT_ENCODING = "Content-Encoding";
 
     private static final String GZIP = "gzip";
-
-    private static final StringMatch STRING_MATCH = new StringMatch();
 
     // Hide constructor
     private GzipUtils() {
@@ -61,39 +59,25 @@ public class GzipUtils {
                                             boolean requireWantsHeader) throws
                                                                         IOException {
         OutputStream responseStream = httpResponse.getOutputStream();
-
+        final boolean doesNotWantGzip = !httpResponse.getHeaders(CONTENT_ENCODING).contains(GZIP);
+        if ( doesNotWantGzip && requireWantsHeader ) return responseStream;
         // GZIP Support handled here. First we must ensure that we want to use gzip, and that the client supports gzip
-        boolean acceptsGzip = Collections.list(httpRequest.getHeaders(ACCEPT_ENCODING)).stream().anyMatch(STRING_MATCH);
-        boolean wantGzip = httpResponse.getHeaders(CONTENT_ENCODING).contains(GZIP);
+        boolean acceptsGzip = acceptsGzip(httpRequest.getHeaders(ACCEPT_ENCODING)) ;
 
         if (acceptsGzip) {
-            if (!requireWantsHeader || wantGzip) {
-                responseStream = new GZIPOutputStream(responseStream, true);
-                addContentEncodingHeaderIfMissing(httpResponse, wantGzip);
+            responseStream = new GZIPOutputStream(responseStream, true);
+            if (doesNotWantGzip) {
+                httpResponse.setHeader(CONTENT_ENCODING, GZIP);
             }
         }
-
         return responseStream;
     }
 
-    private static void addContentEncodingHeaderIfMissing(HttpServletResponse response, boolean wantsGzip) {
-        if (!wantsGzip) {
-            response.setHeader(CONTENT_ENCODING, GZIP);
+    private static boolean acceptsGzip(Enumeration<String> headers){
+        while ( headers.hasMoreElements() ){
+            final String s = headers.nextElement();
+            if ( s != null && s.contains( GZIP ) ) return true;
         }
+        return false;
     }
-
-    /**
-     * Used instead of lambdas due to risk for java.lang.IncompatibleClassChangeError.
-     */
-    private static class StringMatch implements Predicate<String> {
-        @Override
-        public boolean test(String s) {
-            if (s == null) {
-                return false;
-            }
-
-            return s.contains(GZIP);
-        }
-    }
-
 }

@@ -18,6 +18,7 @@ package spark.http.matching;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.zip.GZIPOutputStream;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -70,11 +71,10 @@ final class Body {
 
             // Serialize the body to output stream
             serializerChain.process(responseStream, content);
-
-            responseStream.flush(); // needed for GZIP stream. Not sure where the HTTP response actually gets cleaned up
-            responseStream.close(); // needed for GZIP
+            if ( responseStream instanceof GZIPOutputStream ) {
+                responseStream.flush(); // needed for GZIP stream. Not sure where the HTTP response actually gets cleaned up
+                responseStream.close(); // needed for GZIP
+            }
         }
     }
-
-
 }
