@@ -57,7 +57,7 @@ public class CompareApp {
     }
 
     public static void main(String[] args) throws Exception {
-        //Spark11.run();
+        Spark11.run();
         //Jetty12.run();
     }
 }
