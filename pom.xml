@@ -39,7 +39,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <jetty.version>12.1.4</jetty.version>
+        <jetty.version>12.1.5</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>1.7.4</powermock.version>
         <mockito.version>1.10.19</mockito.version>
