@@ -39,12 +39,12 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <jetty.version>12.1.5</jetty.version>
+        <jetty.version>12.1.6</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>1.7.4</powermock.version>
         <mockito.version>1.10.19</mockito.version>
         <maven.javadoc.skip>false</maven.javadoc.skip>
-        <gpg.skip>false</gpg.skip>
+        <gpg.skip>true</gpg.skip>
         <deploy.skip>false</deploy.skip>
     </properties>
 
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.19</version>
+            <version>1.5.32</version>
             <scope>test</scope>
         </dependency>
 
