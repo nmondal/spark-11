@@ -101,9 +101,8 @@ public class MatcherFilter implements Filter {
             return;
         }
 
-        String method = getHttpMethodFrom(httpRequest);
+        HttpMethod httpMethod = getHttpMethodFrom(httpRequest);
 
-        String httpMethodStr = method.toLowerCase();
         String uri = httpRequest.getRequestURI();
         String acceptType = httpRequest.getHeader(ACCEPT_TYPE_REQUEST_MIME_HEADER);
 
@@ -113,8 +112,6 @@ public class MatcherFilter implements Filter {
         ResponseWrapper responseWrapper = ResponseWrapper.create();
 
         Response response = RequestResponseFactory.create(httpResponse);
-
-        HttpMethod httpMethod = HttpMethod.get(httpMethodStr);
 
         RouteContext context = RouteContext.create()
                 .withMatcher(routeMatcher)
@@ -204,18 +201,12 @@ public class MatcherFilter implements Filter {
         }
     }
 
-    private String getHttpMethodFrom(HttpServletRequest httpRequest) {
+    private HttpMethod getHttpMethodFrom(HttpServletRequest httpRequest) {
         String method = httpRequest.getHeader(HTTP_METHOD_OVERRIDE_HEADER);
 
         if (method == null) {
             method = httpRequest.getMethod();
         }
-        return method;
+        return HttpMethod.get(method);
     }
-
-    @Override
-    public void destroy() {
-    }
-
-
 }

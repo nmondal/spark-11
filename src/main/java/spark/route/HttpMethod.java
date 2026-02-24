@@ -17,6 +17,7 @@
 package spark.route;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * @author Per Wendel
@@ -24,11 +25,18 @@ import java.util.HashMap;
 public enum HttpMethod {
     get, post, put, patch, delete, head, trace, connect, options, before, after, afterafter, unsupported;
 
+    // all possible routes of optimizing it completely failed
+    // this is the fastest way to cast and reverse cast
+    // https://medium.com/javarevisited/micro-optimizations-in-java-good-nice-and-slow-enum-261e6f77bd2e
     private static HashMap<String, HttpMethod> methods = new HashMap<>();
 
     static {
+        // https://stackoverflow.com/questions/5258977/are-http-headers-case-sensitive
         for (HttpMethod method : values()) {
-            methods.put(method.toString(), method);
+            final String lowerCased = method.toString();
+            final String upperCased = lowerCased.toUpperCase(Locale.ROOT);
+            methods.put(lowerCased, method);
+            methods.put(upperCased, method);
         }
     }
 
@@ -40,7 +48,6 @@ public enum HttpMethod {
      * @return          The HttpMethod corresponding to the provided string
      */
     public static HttpMethod get(String methodStr) {
-        HttpMethod method = methods.get(methodStr);
-        return method != null ? method : unsupported;
+        return methods.getOrDefault(methodStr, unsupported );
     }
 }

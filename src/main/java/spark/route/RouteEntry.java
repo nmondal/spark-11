@@ -43,25 +43,33 @@ class RouteEntry {
     }
 
     boolean matches(HttpMethod httpMethod, String path) {
-        if ((httpMethod == HttpMethod.before || httpMethod == HttpMethod.after || httpMethod == HttpMethod.afterafter)
-                && (this.httpMethod == httpMethod)
-                && this.path.equals(SparkUtils.ALL_PATHS)) {
+        if ( this.httpMethod != httpMethod ) return false;
+        if (this.path.equals(SparkUtils.ALL_PATHS) &&
+            (httpMethod == HttpMethod.before || httpMethod == HttpMethod.after || httpMethod == HttpMethod.afterafter) ) {
             // Is filter and matches all
             return true;
         }
-        boolean match = false;
-        if (this.httpMethod == httpMethod) {
-            match = matchPath(path);
-        }
-        return match;
+        return matchPath(path);
+    }
+
+    private static char endChar(String s){
+        int l = s.length();
+        if ( l == 0 ) return 0;
+        return s.charAt(l-1);
     }
 
     private boolean matchPath(String path) { // NOSONAR
-        if (!this.path.endsWith("*") && ((path.endsWith("/") && !this.path.endsWith("/")) // NOSONAR
-                || (this.path.endsWith("/") && !path.endsWith("/")))) {
+        final char thisPathEndChar = endChar(this.path) ;
+        final char pathEndChar = endChar(path) ;
+
+        if (
+            (thisPathEndChar != '*'  && pathEndChar == '/' &&  thisPathEndChar != '/'  ) // NOSONAR
+            || ( thisPathEndChar == '/' && pathEndChar != '/' )
+        ) {
             // One and not both ends with slash
             return false;
         }
+
         if (this.path.equals(path)) {
             // Paths are the same
             return true;

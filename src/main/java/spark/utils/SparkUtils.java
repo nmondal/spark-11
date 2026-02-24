@@ -18,6 +18,7 @@ package spark.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Some utility methods
@@ -32,18 +33,20 @@ public final class SparkUtils {
     }
 
     public static List<String> convertRouteToList(String route) {
-        String[] pathArray = route.split("/");
+
+        StringTokenizer tokenizer = new StringTokenizer(route, "/") ;
         List<String> path = new ArrayList<>();
-        for (String p : pathArray) {
-            if (p.length() > 0) {
+        while ( tokenizer.hasMoreElements() ){
+            String p = tokenizer.nextToken();
+            if (!p.isEmpty()) {
                 path.add(p);
             }
         }
         return path;
     }
-
+    // /x/:param
     public static boolean isParam(String routePart) {
-        return routePart.startsWith(":");
+        return routePart.charAt(0) == ':' ;
     }
 
     public static boolean isSplat(String routePart) {
