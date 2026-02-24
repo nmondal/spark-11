@@ -1,8 +1,17 @@
-[![](https://img.shields.io/travis/perwendel/spark.svg)](https://travis-ci.org/perwendel/spark)
+![example workflow](https://github.com/nmondal/spark-11/actions/workflows/maven.yml/badge.svg)
 [![](https://img.shields.io/github/license/perwendel/spark.svg)](./LICENSE)
-To answer a lot of questions about activity in this project, 
-yes, this project is fully active, and we just released the jetty `12.1.1`
-compatible version as `3.0.3` Oct 05, 2025!
+
+## Latest News 
+
+* 2026-Feb-24 : We are now preparing to release `3.0.4` which improves the performance drastically, 
+very close to that of the native Jetty 12.xx !
+
+* 2025-Oct-05 : To answer a lot of questions about activity in this project,
+  yes, this project is fully active, and we just released the jetty `12.1.1`
+  compatible version as `3.0.3` Oct 05, 2025!
+
+
+## Introduction 
 
 Spark3-JDK17 - a tiny web framework for Java 9+!
 
@@ -45,7 +54,7 @@ Getting started
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
 </dependency>
 ```
 
