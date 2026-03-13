@@ -3,8 +3,10 @@
 
 ## Latest News 
 
-* 2026-Feb-24 : We are now preparing to release `3.0.4` which improves the performance drastically, 
+* 2026-Feb-24 : We have now released `3.0.4` which improves the performance drastically, 
 very close to that of the native Jetty 12.xx !
+See the details [in a PR Comment here](https://github.com/nmondal/spark-11/pull/28#issuecomment-3566266652).
+
 
 * 2025-Oct-05 : To answer a lot of questions about activity in this project,
   yes, this project is fully active, and we just released the jetty `12.1.1`
@@ -20,7 +22,7 @@ Spark3-JDK17 - a tiny web framework for Java 9+!
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
 </dependency>
 ```
 
@@ -54,7 +56,7 @@ Getting started
 <dependency>
     <groupId>org.zoomba-lang</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
 </dependency>
 ```
 
