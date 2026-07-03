@@ -88,12 +88,12 @@ public class CookiesIntegrationTest {
             }
             return "";
         });
-
+        Spark.awaitInitialization();
     }
 
     @AfterClass
     public static void stopServer() {
-        Spark.stop();
+        Spark.awaitStop();
     }
 
     @Test
